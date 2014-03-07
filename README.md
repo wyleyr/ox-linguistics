@@ -19,10 +19,11 @@ Here I refer back to sentence [[s:questionable]].
 will be exported to LaTeX as:
 
 ```TeX
-\ex.?\label{s:questionable} A questionable example am I. \par
-\ex. \label{q:question} Is this a question?
-\a. \label{a:yes} Yes.
-\b. \label{a:no} I don't think so.
+\ex.?\label{s:questionable}A questionable example am I.
+\par
+\ex.\label{q:question}Is this a question?
+\a.\label{a:yes}Yes.
+\b.\label{a:no}I don't think so.
 \z.
 \par
 
