@@ -52,7 +52,7 @@ There are no releases of ox-linguistics (yet); to install it, do:
 Then, somewhere in your .emacs, add:
 
 ```elisp
-(add-to-list 'load-path $WHEREVER/ox-linguistics/lisp)
+(add-to-list 'load-path "$WHEREVER/ox-linguistics/lisp")
 (require 'ox-linguistics)
 ```
 
