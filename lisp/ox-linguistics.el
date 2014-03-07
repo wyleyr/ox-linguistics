@@ -60,7 +60,7 @@
   ; with whitespace after them,
   ; and beginning-of-line and possibly whitespace before them
   ; (so as not to match '?' at the end of sentences, in particular)
-  "Regular expression to match linguistic judgments in lingustic example lists")
+  "Regular expression to match linguistic judgments in linguistic example lists")
 
 (defvar org-linguistics-label-regexp
   "[[:space:]]*\\(\\\\label{[a-zA-Z0-9_.:-]+}\\)[[:space:]]*"
@@ -180,7 +180,7 @@ gb4e or linguex example environment in the export output.
 
 For example:
 
-#ATTR_LATEX: :environment gb4e-exe
+#+ATTR_LATEX: :environment gb4e-exe
 1) I know /nothing/ about human languages. <<s:I:know-nothing>>
 2) * But Ralph do. <<s:ralph:knows>>
 
@@ -192,13 +192,15 @@ will give:
 
 and
 
-#ATTR_LATEX: :environment linguex-ex
+#+ATTR_LATEX: :environment linguex-ex
 1) I know /nothing/ about human languages. <<s:I:know-nothing>>
 2) * But Ralph do. <<s:ralph:knows>>
 
 will give:
-\\ex. \\label{s:I:know-nothing}I know \\emph{nothing} about human languages. \\par
-\\ex.* \\label{s:ralph:knows}But Ralph do. \\par
+\\ex.\\label{s:I:know-nothing}I know \\emph{nothing} about human languages.
+\\par
+\\ex.*\\label{s:ralph:knows}But Ralph do.
+\\par
 "
   (let* ((type (org-element-property :type plain-list))
 	 (env (org-export-read-attribute :attr_latex plain-list :environment))
