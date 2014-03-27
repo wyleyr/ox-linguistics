@@ -17,7 +17,7 @@
 ;;;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
 
 
-
+(require 'cl) ; needed for `labels'.  TODO: move to cl-lib?
 (require 'ox-latex)
 
 (org-export-define-derived-backend
