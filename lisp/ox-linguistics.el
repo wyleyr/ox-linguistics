@@ -1,6 +1,6 @@
 ;;;;
 ;;;; ox-linguistics.el
-;;;; Export backend that supports linguistics examples
+;;;; Org mode export backend that supports linguistics examples
 ;;;;
 ;;;; Copyright 2014 Richard Lawrence
 ;;;; This file is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@
 		   (:latex-class-options "LATEX_CLASS_OPTIONS" nil nil t)
 		   (:latex-header "LATEX_HEADER" nil nil newline)
 		   (:latex-header-extra "LATEX_HEADER_EXTRA" nil nil newline)
-		   (:latex-hyperref-p nil "texht" org-latex-with-hyperref t)
+		   ;(:latex-hyperref-p nil "texht" org-latex-with-hyperref t)
 		   ;; Redefine regular options.
 		   (:date "DATE" nil "\\today" t))
   :translate-alist '((plain-list . org-linguistics-plain-list)
