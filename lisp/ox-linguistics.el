@@ -285,14 +285,18 @@ contextual information."
 	      (lambda (c) (eq 'paragraph (org-element-type c)))
 	      (org-element-contents el)))))
     (let* ((par-child (get-par-child item))
-	   (judgment (org-element-property :judgment par-child)))
+	   (judgment (org-element-property :judgment par-child))
+	   (tag (org-element-property :tag item))
+	   (item-cmd (if tag (format "\\exi{%s}" (org-export-data tag info))
+		       "\\ex")))
      (if judgment
 	 (progn
 	   (org-element-put-property item :has-judgment t)
-	   (format "\\ex[%s]%s" judgment contents))
+	   (format "%s[%s]%s" item-cmd judgment contents))
        (progn
 	 (org-element-put-property item :has-judgment nil)
-	 (format "\\ex%s%s" org-linguistics-empty-judgment-placeholder
+	 (concat item-cmd
+		 org-linguistics-empty-judgment-placeholder
 		 contents))))))
 
 (defun org-linguistics-linguex-item (item contents info toplevel)
