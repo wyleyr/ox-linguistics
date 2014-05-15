@@ -317,12 +317,16 @@ Otherwise, it will transcoded as \\a. or \\b. as appropriate."
 		       (toplevel "\\ex.")
 		       ((first-child-p item) "\\a.")
 		       (t "\\b.")))
+	   (tag (org-element-property :tag item))
+	   (tag-cmd (if tag
+			(format "[%s]" (org-export-data tag info))
+		      ""))
 	   (end-cmd (cond
 		      (toplevel "\\par\n")
 		      ((last-child-p item) "\\z.\n")
 		      (t "\n"))))
       ; alignment of judgment, etc. handled by org-linguistics-linguex-paragraph 
-      (concat start-cmd contents end-cmd))))
+      (concat start-cmd tag-cmd contents end-cmd))))
 
 ;; Export UI
 ;; These are merely lightly-customized versions of functions provided in
