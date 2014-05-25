@@ -43,6 +43,9 @@
 		     (item . org-linguistics-item)
 		     (paragraph . org-linguistics-paragraph)))
 
+;;
+;; General-purpose helpers
+;; 
 (defun org-linguistics-find-enclosing-pkg (element)
   "Find the enclosing linguistics package of a (list) element during export."
   (let ((type (org-element-property :type element))
@@ -54,6 +57,9 @@
 	 (parent (org-linguistics-find-enclosing-pkg parent))
 	 (t nil))))
 
+;;
+;; Paragraphs
+;; 
 (defvar org-linguistics-judgment-regexp
   "^[[:space:]]*\\([*?%#\\\\]+\\)[[:space:]]+"
   ; judgments are: sequences of the characters '*', '?', '%', '#' and '\',
@@ -99,7 +105,7 @@ the appropriate package-specific paragraph transcoding function."
 			 (and (string= enclosing-pkg "linguex")
 			      (eq parent-type 'item)))))
     (if (not transcodep)
-	;; leave contents unchanged if we're not an item in a gb4e list
+	;; leave contents unchanged if we're not an item in an example list
 	contents
       ;; otherwise, separate judgments and labels from contents
       ;; proper: labels are removed first, so that judgments end up at
@@ -167,6 +173,9 @@ handling judgment and label placement."
 	    (or label "")
 	    proper-contents)))
 
+;;
+;; Plain lists
+;; 
 (defun org-linguistics-plain-list (plain-list contents info)
   "Transcode a PLAIN-LIST element from Org to Linguistics LaTeX.
 CONTENTS is the contents of the list.  INFO is a plist holding
@@ -179,6 +188,23 @@ examples using list attributes provided via ATTR_LATEX declarations.
 You can set the :package attribute of an Org list to \"gb4e\" or
 \"linguex\" to get the appropriate formatting for a gb4e or
 linguex example environment in the export output.
+
+You can set the :item-command attribute to set the command used
+to introduce examples.  (If you do not specify :item-command, a
+package-appropriate default will be used.)  Possible values for
+each backend package are listed in
+`org-linguistics-gb4e-item-commands',
+`org-linguistics-linguex-item-commands', and
+`org-linguistics-philex-item-commands'.  Arguments to these
+commands can be provided from Org via a tag on the list item.
+Individual arguments should be separated by a string that matches
+`org-linguistics-command-args-separator'.
+
+When using gb4e, you can also set the :environment attribute to
+select the environment used to construct the example list.  (If
+you do not specify :environment, \"exe\" will be used as the
+default for top-level lists, and \"xlist\" as the default for
+nested sublists.)
 
 For example:
 
@@ -259,6 +285,48 @@ LIST-TYPE indicates environment type: e.g., 'exe' or 'xlist'"
   ; all commands are handled by org-linguistics-linguex-item
   contents)
 
+;;
+;; List items
+;; 
+(defvar org-linguistics-command-args-separator
+  ";"
+  "Regular expression used to split item command arguments in list tags.")
+ 
+(defun org-linguistics-command-args-from-item (item)
+  "Extract arguments for an example command from ITEM's tag (if any)."
+  (let* ((tag (org-element-property :tag item)))
+    (when tag (split-string tag org-linguistics-command-args-separator nil))))
+
+(defvar org-linguistics-gb4e-item-commands
+  '(("ex" . ()) ; default
+    ("exi" . ("string")) ; example with user-supplied number/label
+    ("exr" . ("key")) ; repeat of previous example 
+    ("exp" . ("key")) ; 'primed' version of previous example
+    ("sn" . ())) ; unnumbered example
+  "gb4e item commands and their argument structures")
+
+(defvar org-linguistics-linguex-item-commands
+  '(("ex" . ()) ; default
+    ("exi" . ()) ; syntax example with labeled brackets
+    ("exg" . ()) ; glossed example
+    ("a" . ()) ; subitem
+    ("ai" . ()) ; subitem with labeled brackets
+    ("ag" . ())) ; glossed subitem 
+  "linguex item commands and their argument structures")
+
+(defvar org-linguistics-philex-item-commands
+  '(("lb" . ("key")) ; default
+    ("lbu" . ("key" "key" "string")) ; "updated" version of previous example
+    ("lbp" . ("key" "string")) ; named example
+    ("lbpa" . ("key")) ; example in named series a (requires previous \bpformat)
+    ("lbpb" . ("key")) ; example in named series b
+    ("lbpc" . ("key")) ; example in named series c
+    ("lbpd" . ("key")) ; example in named series d
+    ("lba" . ())) ; subitem 
+  "philex item commands and their argument structures") 
+
+(defvar org-linguistics-empty-judgment-placeholder "%%EMPTY-JUDGMENT%%")
+
 (defun org-linguistics-item (item contents info)
   "Transcode an ITEM element from Org to Linguistics LaTeX.
 CONTENTS holds the contents of the item.  INFO is a plist holding
@@ -277,7 +345,6 @@ contextual information."
        (org-linguistics-linguex-item item contents info nil))
       (t (org-latex-item item contents info)))))
 
-(defvar org-linguistics-empty-judgment-placeholder "%%EMPTY-JUDGMENT%%")
 (defun org-linguistics-gb4e-item (item contents info)
   "Transcode an ITEM element from Org to a gb4e \\ex command"
   (labels ((get-par-child
