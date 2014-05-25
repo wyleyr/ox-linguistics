@@ -7,7 +7,7 @@ exported to LaTeX using a linguistics example package such as
 [gb4e](http://www.ctan.org/pkg/gb4e). For example:
 
 ```Org
-#+ATTR_LATEX: :environment linguex-ex
+#+ATTR_LATEX: :package linguex
 1) ? A questionable example am I. <<s:questionable>>
 2) Is this a question? <<q:question>>
    - Yes. <<a:yes>>
@@ -59,16 +59,16 @@ Then, somewhere in your .emacs, add:
 # Use
 Once you've loaded the package, using it from Org mode is simple.  To
 turn a regular list into a list of example sentences, use Org's
-`#+ATTR_LATEX:` syntax for that list, and set the `:environment`
-keyword to indicate which package you want to use to generate the
-examples in your exported document.  The environment keywords that
+`#+ATTR_LATEX:` syntax on that list to set the `:package`
+attribute to indicate which package you want to use to generate the
+examples in your exported document.  The package keywords that
 ox-linguistics recognizes are:
-  - `linguex-ex` for linguex examples using the `\ex.` command
-  - `gb4e-exe` for gb4e examples using the `exe` environment
+  - `linguex` for linguex examples
+  - `gb4e` for gb4e examples
   
 So, for example:
 ```Org
-#+ATTR_LATEX: :environment gb4e-exe
+#+ATTR_LATEX: :package gb4e
 1) Example 1
 2) * Example 2
 3) ?? Example 3
@@ -87,7 +87,7 @@ or similar in your Org file.
 To label an example, use Org's target syntax:
 
 ```Org
-#+ATTR_LATEX: :environment linguex-ex
+#+ATTR_LATEX: :package linguex
 1) This is my first example sentence. <<s:first>>
 ```
 Here, the target will be exported as a `\label` with key `s:first`:
@@ -113,7 +113,7 @@ To add a judgment to an example, simply place it at the beginning of
 the example, with whitespace afterward.
 
 ```Org
-#+ATTR_LATEX: :environment gb4e-exe
+#+ATTR_LATEX: :package gb4e
 1) * This my second example sentence. <<s:second>>
 2) ?? My third example this is. <<s:yoda>>
 ```

@@ -43,15 +43,15 @@
 		     (item . org-linguistics-item)
 		     (paragraph . org-linguistics-paragraph)))
 
-(defun find-enclosing-env (element)
-  "Find the enclosing environment of a (list) element during export."
+(defun org-linguistics-find-enclosing-pkg (element)
+  "Find the enclosing linguistics package of a (list) element during export."
   (let ((type (org-element-property :type element))
-	(env (org-export-read-attribute :attr_latex element
-					:environment))
+	(pkg (org-export-read-attribute :attr_latex element
+					:package))
 	(parent (org-export-get-parent element)))
 	(cond
-	 (env env)
-	 (parent (find-enclosing-env parent))
+	 (pkg pkg)
+	 (parent (org-linguistics-find-enclosing-pkg parent))
 	 (t nil))))
 
 (defvar org-linguistics-judgment-regexp
@@ -93,10 +93,10 @@ PARAGRAPH's :proper-contents property.  This function then calls
 the appropriate package-specific paragraph transcoding function."
   (let* ((parent (org-element-property :parent paragraph))
 	 (parent-type (org-element-type parent))
-	 (enclosing-env (find-enclosing-env paragraph))
-	 (transcodep (or (and (string= enclosing-env "gb4e-exe")
+	 (enclosing-pkg (org-linguistics-find-enclosing-pkg paragraph))
+	 (transcodep (or (and (string= enclosing-pkg "gb4e")
 			      (eq parent-type 'item))
-			 (and (string= enclosing-env "linguex-ex")
+			 (and (string= enclosing-pkg "linguex")
 			      (eq parent-type 'item)))))
     (if (not transcodep)
 	;; leave contents unchanged if we're not an item in a gb4e list
@@ -124,9 +124,9 @@ the appropriate package-specific paragraph transcoding function."
 	(org-element-put-property paragraph :label label)
 	(org-element-put-property paragraph :proper-contents proper-contents)
 	(cond
-	 ((string= enclosing-env "gb4e-exe")
+	 ((string= enclosing-pkg "gb4e")
 	  (org-linguistics-gb4e-paragraph paragraph contents info))
-	 ((string= enclosing-env "linguex-ex")
+	 ((string= enclosing-pkg "linguex")
 	  (org-linguistics-linguex-paragraph paragraph contents info))
 	 (t
 	  ; this should not happen, as we won't be in the else branch
@@ -174,13 +174,15 @@ contextual information.
 
 This function simply wraps org-latex-plain-list for most lists.
 But it adds the ability to export plain lists as linguistics
-examples.  You can set the :environment attribute of an Org list to
-gb4e-exe or linguex-ex to get the appropriate formatting for a
-gb4e or linguex example environment in the export output.
+examples using list attributes provided via ATTR_LATEX declarations.
+
+You can set the :package attribute of an Org list to \"gb4e\" or
+\"linguex\" to get the appropriate formatting for a gb4e or
+linguex example environment in the export output.
 
 For example:
 
-#+ATTR_LATEX: :environment gb4e-exe
+#+ATTR_LATEX: :package gb4e
 1) I know /nothing/ about human languages. <<s:I:know-nothing>>
 2) * But Ralph do. <<s:ralph:knows>>
 
@@ -192,7 +194,7 @@ will give:
 
 and
 
-#+ATTR_LATEX: :environment linguex-ex
+#+ATTR_LATEX: :package linguex
 1) I know /nothing/ about human languages. <<s:I:know-nothing>>
 2) * But Ralph do. <<s:ralph:knows>>
 
@@ -203,22 +205,19 @@ will give:
 \\par
 "
   (let* ((type (org-element-property :type plain-list))
-	 (env (org-export-read-attribute :attr_latex plain-list :environment))
-	 (enclosing-env (find-enclosing-env plain-list)))
+	 (pkg (org-export-read-attribute :attr_latex plain-list :package))
+	 (cmd (org-export-read-attribute :attr_latex plain-list :item-command))
+	 (enclosing-pkg (org-linguistics-find-enclosing-pkg plain-list)))
     (cond 
-      ;; this is a slight abuse of ":environment"
-      ;; "gb4e-exe" and "linguex-ex" are not names of LaTeX environments exactly,
-      ;; but they make it easy to indicate the intended environment 
-     
-      ; if this list itself has "gb4e-exe" as environment, use exe env
-      ((string= env "gb4e-exe")
+      ; if this list itself has "gb4e" as package, use exe env
+      ((string= pkg "gb4e")
        (org-linguistics-gb4e-plain-list plain-list contents info "exe"))
-      ; if this list is *enclosed in* a "gb4e-exe" environment, use xlist env
-      ((string= enclosing-env "gb4e-exe")
+      ; if this list is *enclosed in* a gb4e list, use xlist env
+      ((string= enclosing-pkg "gb4e")
        (org-linguistics-gb4e-plain-list plain-list contents info "xlist"))
       ; the distinction between toplevel and sublevel lists is handled at the
       ; item level for linguex
-      ((string= enclosing-env "linguex-ex")
+      ((string= enclosing-pkg "linguex")
        (org-linguistics-linguex-plain-list plain-list contents info))
       (t (org-latex-plain-list plain-list contents info)))))
 
@@ -262,15 +261,15 @@ LIST-TYPE indicates environment type: e.g., 'exe' or 'xlist'"
 CONTENTS holds the contents of the item.  INFO is a plist holding
 contextual information."
   (let* ((parent-list (org-element-property :parent item))
-	 (env (org-export-read-attribute :attr_latex parent-list :environment))
-	 (enclosing-env (find-enclosing-env item)))
+	 (pkg (org-export-read-attribute :attr_latex parent-list :package))
+	 (enclosing-pkg (org-linguistics-find-enclosing-pkg item)))
     (cond 
-      ((string= enclosing-env "gb4e-exe")
+      ((string= enclosing-pkg "gb4e")
        (org-linguistics-gb4e-item item contents info))
-      ((string= env "linguex-ex")
+      ((string= pkg "linguex")
        ; toplevel item, to be transcoded as \ex.
        (org-linguistics-linguex-item item contents info t))
-      ((string= enclosing-env "linguex-ex")
+      ((string= enclosing-pkg "linguex")
        ; sublist item, to be transcoded as \a. etc.
        (org-linguistics-linguex-item item contents info nil))
       (t (org-latex-item item contents info)))))
