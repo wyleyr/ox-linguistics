@@ -206,15 +206,18 @@ will give:
 "
   (let* ((type (org-element-property :type plain-list))
 	 (pkg (org-export-read-attribute :attr_latex plain-list :package))
+	 (env (org-export-read-attribute :attr_latex plain-list :environment))
 	 (cmd (org-export-read-attribute :attr_latex plain-list :item-command))
 	 (enclosing-pkg (org-linguistics-find-enclosing-pkg plain-list)))
     (cond 
-      ; if this list itself has "gb4e" as package, use exe env
+      ; if this list itself has "gb4e" as package, use exe env, unless user
+      ; overrides
       ((string= pkg "gb4e")
-       (org-linguistics-gb4e-plain-list plain-list contents info "exe"))
-      ; if this list is *enclosed in* a gb4e list, use xlist env
+       (org-linguistics-gb4e-plain-list plain-list contents info (or env "exe")))
+      ; if this list is *enclosed in* a gb4e list, use xlist env, unless user
+      ; overrides
       ((string= enclosing-pkg "gb4e")
-       (org-linguistics-gb4e-plain-list plain-list contents info "xlist"))
+       (org-linguistics-gb4e-plain-list plain-list contents info (or env "xlist")))
       ; the distinction between toplevel and sublevel lists is handled at the
       ; item level for linguex
       ((string= enclosing-pkg "linguex")
