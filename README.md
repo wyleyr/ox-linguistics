@@ -7,7 +7,7 @@ exported to LaTeX using a linguistics example package such as
 [gb4e](http://www.ctan.org/pkg/gb4e). For example:
 
 ```Org
-#+ATTR_LATEX: :package linguex
+#+ATTR_LINGUISTICS: :package linguex
 1) ? A questionable example am I. <<s:questionable>>
 2) Is this a question? <<q:question>>
    - Yes. <<a:yes>>
@@ -57,24 +57,26 @@ Then, somewhere in your .emacs, add:
 ```
 
 # Use
-Once you've loaded the package, using it from Org mode is simple.  To
-turn a regular list into a list of example sentences, use Org's
-`#+ATTR_LATEX:` syntax on that list to set the `:package`
-attribute to indicate which package you want to use to generate the
-examples in your exported document.  The package keywords that
+Once you've loaded the ox-linguistics package, using it from Org mode
+is simple.  To turn a regular list into a list of example sentences,
+you need to tell the ox-linguistics backend which LaTeX package you
+want to use to typeset the list.  You do this by providing an
+`#+ATTR_LINGUISTICS` header to the list which specifies the desired
+package using the `:package` attribute.  The package keywords that
 ox-linguistics recognizes are:
   - `linguex` for linguex examples
   - `gb4e` for gb4e examples
   
-So, for example:
+So, for example, a list like:
 ```Org
-#+ATTR_LATEX: :package gb4e
+#+ATTR_LINGUISTICS: :package gb4e
 1) Example 1
 2) * Example 2
 3) ?? Example 3
 ```
 will be exported as a gb4e example.  ox-linguistics takes care of
-properly placing labels and judgments for whatever package you select. 
+properly placing labels and judgments for whatever LaTeX package you
+select. 
 
 Don't forget to load the appropriate package in your document
 preamble.  Here you would need:
@@ -87,7 +89,7 @@ or similar in your Org file.
 To label an example, use Org's target syntax:
 
 ```Org
-#+ATTR_LATEX: :package linguex
+#+ATTR_LINGUISTICS: :package linguex
 1) This is my first example sentence. <<s:first>>
 ```
 Here, the target will be exported as a `\label` with key `s:first`:
@@ -113,7 +115,7 @@ To add a judgment to an example, simply place it at the beginning of
 the example, with whitespace afterward.
 
 ```Org
-#+ATTR_LATEX: :package gb4e
+#+ATTR_LINGUISTICS: :package gb4e
 1) * This my second example sentence. <<s:second>>
 2) ?? My third example this is. <<s:yoda>>
 ```
