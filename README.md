@@ -132,7 +132,7 @@ passed as optional arguments to gb4e's `\ex` command:
 ```
 
 (Don't forget to escape judgment characters that have special meaning
-to LaTeX, such as `%' and `#', with a backslash.)
+to LaTeX, such as `%` and `#`, with a backslash.)
 
 ## Exporting
 ox-linguistics works by providing an export backend that derives from
