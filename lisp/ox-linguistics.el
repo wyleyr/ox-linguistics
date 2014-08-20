@@ -48,8 +48,7 @@
 ;; 
 (defun org-linguistics-find-enclosing-pkg (element)
   "Find the enclosing linguistics package of a (list) element during export."
-  (let ((type (org-element-property :type element))
-	(pkg (org-export-read-attribute :attr_latex element
+  (let ((pkg (org-export-read-attribute :attr_linguistics element
 					:package))
 	(parent (org-export-get-parent element)))
 	(cond
@@ -183,7 +182,7 @@ contextual information.
 
 This function simply wraps org-latex-plain-list for most lists.
 But it adds the ability to export plain lists as linguistics
-examples using list attributes provided via ATTR_LATEX declarations.
+examples using list attributes provided via ATTR_LINGUISTICS declarations.
 
 You can set the :package attribute of an Org list to \"gb4e\" or
 \"linguex\" to get the appropriate formatting for a gb4e or
@@ -208,7 +207,7 @@ nested sublists.)
 
 For example:
 
-#+ATTR_LATEX: :package gb4e
+#+ATTR_LINGUISTICS: :package gb4e
 1) I know /nothing/ about human languages. <<s:I:know-nothing>>
 2) * But Ralph do. <<s:ralph:knows>>
 
@@ -220,7 +219,7 @@ will give:
 
 and
 
-#+ATTR_LATEX: :package linguex
+#+ATTR_LINGUISTICS: :package linguex
 1) I know /nothing/ about human languages. <<s:I:know-nothing>>
 2) * But Ralph do. <<s:ralph:knows>>
 
@@ -231,9 +230,9 @@ will give:
 \\par
 "
   (let* ((type (org-element-property :type plain-list))
-	 (pkg (org-export-read-attribute :attr_latex plain-list :package))
-	 (env (org-export-read-attribute :attr_latex plain-list :environment))
-	 (cmd (org-export-read-attribute :attr_latex plain-list :item-command))
+	 (pkg (org-export-read-attribute :attr_linguistics plain-list :package))
+	 (env (org-export-read-attribute :attr_linguistics plain-list :environment))
+	 (cmd (org-export-read-attribute :attr_linguistics plain-list :item-command))
 	 (enclosing-pkg (org-linguistics-find-enclosing-pkg plain-list)))
     (cond 
       ; if this list itself has "gb4e" as package, use exe env, unless user
@@ -274,7 +273,7 @@ LIST-TYPE indicates environment type: e.g., 'exe' or 'xlist'"
        (buffer-string)))
     (format "\\begin{%s}%s\n%s\\end{%s}"
 	    list-type
-	    (or (plist-get (org-export-read-attribute :attr_latex plain-list)
+	    (or (plist-get (org-export-read-attribute :attr_linguistics plain-list)
 			   :options)
 		"")
 	    contents
