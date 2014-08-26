@@ -134,6 +134,36 @@ passed as optional arguments to gb4e's `\ex` command:
 (Don't forget to escape judgment characters that have special meaning
 to LaTeX, such as `%` and `#`, with a backslash.)
 
+## Overriding default numbering
+By default, the gb4e and linguex packages use a running counter to
+assign numbers as identifiers for your examples.  You can override
+this numbering for a given example by providing a tag for its list
+item.  The tag will be used to generate an alternative identifier.
+For example,
+
+```Org
+#+ATTR_LINGUISTICS: :package gb4e
+- Principle C. ::  An R-expression is free only
+  - \alpha) :: with respect to potential binders in A-positions, or
+  - \beta) :: within the domain of its chain
+```
+will be exported as:
+
+```TeX
+\begin{exe}
+\exi{Principle C.}{An R-expression is free only}
+\begin{xlist}
+\exi{\(\alpha\))}{with respect to potential binders in A-positions, or}
+\exi{\(\beta\))}{within the domain of its chain}
+\end{xlist}
+\end{exe}
+```
+
+which will produce the desired identifiers in the output document.
+
+You can use this mechanism to repeat earlier examples: simply use a
+link to the earlier example as the list item tag.
+
 ## Exporting
 ox-linguistics works by providing an export backend that derives from
 Org's own LaTeX export backend.  To export an Org document using
