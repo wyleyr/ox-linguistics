@@ -371,34 +371,20 @@ contextual information."
   "Transcode an ITEM element from Org to a linguex example item.
 If TOPLEVEL is non-nil, the item will be transcoded as a linguex \\ex. command.
 Otherwise, it will transcoded as \\a. or \\b. as appropriate."
-  (labels ((first-child-p (el)
-	    ; an element is the first child of its parent if its :begin
-	    ; matches its parent list's :content-begin
-	    (let* ((parent (org-element-property :parent el))
-		   (el-begin (org-element-property :begin el))
-		   (contents-begin (org-element-property :contents-begin parent)))
-	      (equal el-begin contents-begin)))
-	   (last-child-p (el)
-	    ; an element is the last child of its parent if its :end
-	    ; matches its parent list's :content-end
-	    (let* ((parent (org-element-property :parent el))
-		   (el-end (org-element-property :end el))
-		   (contents-end (org-element-property :contents-end parent)))
-	      (equal el-end contents-end))))
-    (let* ((start-cmd (cond
-		       (toplevel "\\ex.")
-		       ((first-child-p item) "\\a.")
-		       (t "\\b.")))
-	   (tag (org-element-property :tag item))
-	   (tag-cmd (if tag
-			(format "[%s]" (org-export-data tag info))
-		      ""))
-	   (end-cmd (cond
-		      (toplevel "\\par\n")
-		      ((last-child-p item) "\\z.\n")
-		      (t "\n"))))
-      ; alignment of judgment, etc. handled by org-linguistics-linguex-paragraph 
-      (concat start-cmd tag-cmd contents end-cmd))))
+  (let* ((start-cmd (cond
+		     (toplevel "\\ex.")
+		     ((org-export-first-sibling-p item info) "\\a.")
+		     (t "\\b.")))
+	 (tag (org-element-property :tag item))
+	 (tag-cmd (if tag
+		      (format "[%s]" (org-export-data tag info))
+		    ""))
+	 (end-cmd (cond
+		   (toplevel "\\par\n")
+		   ((org-export-last-sibling-p item info) "\\z.\n")
+		   (t "\n"))))
+    ; alignment of judgment, etc. handled by org-linguistics-linguex-paragraph 
+    (concat start-cmd tag-cmd contents end-cmd)))
 
 ;; Export UI
 ;; These are merely lightly-customized versions of functions provided in
