@@ -329,7 +329,7 @@ LIST-TYPE indicates environment type: e.g., 'exe' or 'xlist'"
 CONTENTS holds the contents of the item.  INFO is a plist holding
 contextual information."
   (let* ((parent-list (org-element-property :parent item))
-	 (pkg (org-export-read-attribute :attr_latex parent-list :package))
+	 (pkg (org-export-read-attribute :attr_linguistics parent-list :package))
 	 (enclosing-pkg (org-linguistics-find-enclosing-pkg item)))
     (cond 
       ((string= enclosing-pkg "gb4e")
