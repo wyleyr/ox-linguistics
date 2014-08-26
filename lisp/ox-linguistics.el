@@ -285,43 +285,6 @@ LIST-TYPE indicates environment type: e.g., 'exe' or 'xlist'"
 ;;
 ;; List items
 ;; 
-(defvar org-linguistics-command-args-separator
-  ";"
-  "Regular expression used to split item command arguments in list tags.")
- 
-(defun org-linguistics-command-args-from-item (item)
-  "Extract arguments for an example command from ITEM's tag (if any)."
-  (let* ((tag (org-element-property :tag item)))
-    (when tag (split-string tag org-linguistics-command-args-separator nil))))
-
-(defvar org-linguistics-gb4e-item-commands
-  '(("ex" . ()) ; default
-    ("exi" . ("string")) ; example with user-supplied number/label
-    ("exr" . ("key")) ; repeat of previous example 
-    ("exp" . ("key")) ; 'primed' version of previous example
-    ("sn" . ())) ; unnumbered example
-  "gb4e item commands and their argument structures")
-
-(defvar org-linguistics-linguex-item-commands
-  '(("ex" . ()) ; default
-    ("exi" . ()) ; syntax example with labeled brackets
-    ("exg" . ()) ; glossed example
-    ("a" . ()) ; subitem
-    ("ai" . ()) ; subitem with labeled brackets
-    ("ag" . ())) ; glossed subitem 
-  "linguex item commands and their argument structures")
-
-(defvar org-linguistics-philex-item-commands
-  '(("lb" . ("key")) ; default
-    ("lbu" . ("key" "key" "string")) ; "updated" version of previous example
-    ("lbp" . ("key" "string")) ; named example
-    ("lbpa" . ("key")) ; example in named series a (requires previous \bpformat)
-    ("lbpb" . ("key")) ; example in named series b
-    ("lbpc" . ("key")) ; example in named series c
-    ("lbpd" . ("key")) ; example in named series d
-    ("lba" . ())) ; subitem 
-  "philex item commands and their argument structures") 
-
 (defvar org-linguistics-empty-judgment-placeholder "%%EMPTY-JUDGMENT%%")
 
 (defun org-linguistics-item (item contents info)
