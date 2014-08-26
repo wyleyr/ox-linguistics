@@ -16,8 +16,6 @@
 ;;;; You should have received a copy of the GNU General Public License
 ;;;; along with GNU Emacs.  If not, see <http://www.gnu.org/licenses/>.
 
-
-(require 'cl) ; needed for `labels'.  TODO: move to cl-lib?
 (require 'ox-latex)
 
 (org-export-define-derived-backend
@@ -346,12 +344,12 @@ contextual information."
 
 (defun org-linguistics-gb4e-item (item contents info)
   "Transcode an ITEM element from Org to a gb4e \\ex command"
-  (labels ((get-par-child
-	    (el)
-	    (car ; assumes only one child is a paragraph (this is safe for items) 
-	     (remove-if-not
-	      (lambda (c) (eq 'paragraph (org-element-type c)))
-	      (org-element-contents el)))))
+  (flet ((get-par-child
+	  (el)
+	  (car ; assumes only one child is a paragraph (this is safe for items) 
+	   (remove-if-not
+	    (lambda (c) (eq 'paragraph (org-element-type c)))
+	    (org-element-contents el)))))
     (let* ((par-child (get-par-child item))
 	   (judgment (org-element-property :judgment par-child))
 	   (tag (org-element-property :tag item))
