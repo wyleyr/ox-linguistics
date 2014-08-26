@@ -1,5 +1,5 @@
 # ox-linguistics
-**ox-linguistics** is a package to make is easy to write linguistics-style
+**ox-linguistics** is a package to make it easy to write linguistics-style
 examples in [Org mode](https://orgmode.org) documents.  It supports
 writing example sentences using ordinary Org mode lists. Examples are
 exported to LaTeX using a linguistics example package such as
