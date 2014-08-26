@@ -81,7 +81,7 @@ select.
 Don't forget to load the appropriate package in your document
 preamble.  Here you would need:
 ```Org
-#+EXPORT_LATEX_HEADER: \usepackage{gb4e}
+#+LATEX_HEADER: \usepackage{gb4e}
 ```
 or similar in your Org file.
 
