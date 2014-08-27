@@ -30,13 +30,6 @@
 	   (lambda (a s v b)
 	     (if a (org-latex-export-to-pdf t s v b)
 	       (org-open-file (org-latex-export-to-pdf nil s v b)))))))
-  :options-alist '((:latex-class "LATEX_CLASS" nil org-latex-default-class t)
-		   (:latex-class-options "LATEX_CLASS_OPTIONS" nil nil t)
-		   (:latex-header "LATEX_HEADER" nil nil newline)
-		   (:latex-header-extra "LATEX_HEADER_EXTRA" nil nil newline)
-		   ;(:latex-hyperref-p nil "texht" org-latex-with-hyperref t)
-		   ;; Redefine regular options.
-		   (:date "DATE" nil "\\today" t))
   :translate-alist '((plain-list . org-linguistics-plain-list)
 		     (item . org-linguistics-item)
 		     (paragraph . org-linguistics-paragraph)))
