@@ -118,6 +118,7 @@ the example, with whitespace afterward.
 #+ATTR_LINGUISTICS: :package gb4e
 1) * This my second example sentence. <<s:second>>
 2) ?? My third example this is. <<s:yoda>>
+3) % No need to escape judgment markers that are also LaTeX syntax. <<s:fourth>>
 ```
 
 As with labels, ox-linguistics will place the judgment appropriately
@@ -128,6 +129,7 @@ passed as optional arguments to gb4e's `\ex` command:
 \begin{exe}
 \ex[*]{\label{s:second}This my second example sentence.}
 \ex[??]{\label{s:yoda}My third example this is.}
+\ex[\%]{\label{s:fourth}No need to escape judgment markers that are also LaTeX syntax.}
 \end{exe}
 ```
 
