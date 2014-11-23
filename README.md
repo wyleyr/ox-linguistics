@@ -131,9 +131,6 @@ passed as optional arguments to gb4e's `\ex` command:
 \end{exe}
 ```
 
-(Don't forget to escape judgment characters that have special meaning
-to LaTeX, such as `%` and `#`, with a backslash.)
-
 ## Overriding default numbering
 By default, the gb4e and linguex packages use a running counter to
 assign numbers as identifiers for your examples.  You can override
