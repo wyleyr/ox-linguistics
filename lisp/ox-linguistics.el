@@ -59,9 +59,9 @@ corresponding BODY is evaluated."
 	 (expanded-bodies
 	  (mapcar (lambda (b)
 		    (if (stringp (car b))
-			`((string= ,pkg ,(car b)) ,(cdr b))
+			`((string= ,pkg ,(car b)) ,@(cdr b))
 		      ; allow `t', etc. as PKG-NAME
-		      `(,(car b) ,(cdr b))))
+		      `(,(car b) ,@(cdr b))))
 		  bodies)))
     `(let ((,pkg ,expr))
        (cond
