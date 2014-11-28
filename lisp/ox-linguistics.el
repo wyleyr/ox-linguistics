@@ -48,13 +48,15 @@
 	 (t nil))))
 
 (defmacro package-case (expr &rest bodies)
-  "(EXPR (PKG-NAME BODY...) ...)
+  "(package-case EXPR (PKG-NAME BODY...) ...)
 
 Eval EXPR to a package name and choose among clauses based on
-that package name.  Each clause looks like (PKG-NAME BODY...),
-where PKG-NAME is a string.  EXPR is evaluated and compared
-against each PKG-NAME in turn.  When a comparison succeeds, the
-corresponding BODY is evaluated."
+that package name.  Each clause looks like (PKG-NAME BODY...).
+EXPR is evaluated and compared against each clause in turn.  When
+a comparison succeeds, the corresponding BODY is evaluated. When
+PKG-NAME is a string, it is matched against the value of EXPR.
+Otherwise, PKG-NAME is treated as a Boolean condition, and the
+comparison succeeds if it evaluates to non-nil."
   (let* ((pkg (make-symbol "pkg"))
 	 (expanded-bodies
 	  (mapcar (lambda (b)
@@ -66,6 +68,7 @@ corresponding BODY is evaluated."
     `(let ((,pkg ,expr))
        (cond
 	,@expanded-bodies))))
+
 ;;
 ;; Paragraphs
 ;; 
