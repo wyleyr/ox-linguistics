@@ -245,20 +245,17 @@ will give:
 	 (env (org-export-read-attribute :attr_linguistics plain-list :environment))
 	 (cmd (org-export-read-attribute :attr_linguistics plain-list :item-command))
 	 (enclosing-pkg (org-linguistics-find-enclosing-pkg plain-list)))
-    (if (string= pkg "gb4e")
-        ; if this list itself has "gb4e" as package, use exe env, unless user
-        ; overrides
-	(org-linguistics-gb4e-plain-list plain-list contents info (or env "exe")))
-      ; otherwise, dispatch based on package of enclosing environment
-      (package-case enclosing-pkg
-        ; if this list is *enclosed in* a gb4e list, use xlist env, unless user
-        ; overrides
-	("gb4e" (org-linguistics-gb4e-plain-list plain-list contents info 
-						 (or env "xlist")))
-        ; the distinction between toplevel and sublevel lists is handled at the
-        ; item level for linguex
-	("linguex" (org-linguistics-linguex-plain-list plain-list contents info))
-	(t (org-latex-plain-list plain-list contents info)))))
+    (package-case enclosing-pkg
+      ; if this list *itself* has "gb4e" as package, use exe env (or user value)
+      ((string= pkg "gb4e")
+       (org-linguistics-gb4e-plain-list plain-list contents info (or env "exe")))
+      ; if this list is *enclosed in* a gb4e list, use xlist env (or user value)
+      ("gb4e" (org-linguistics-gb4e-plain-list plain-list contents info 
+					       (or env "xlist")))
+      ; the distinction between toplevel and sublevel lists is handled at the
+      ; item level for linguex
+      ("linguex" (org-linguistics-linguex-plain-list plain-list contents info))
+      (t (org-latex-plain-list plain-list contents info)))))
 
 (defun org-linguistics-gb4e-plain-list (plain-list contents info list-type)
   "Transcode a plain list to gb4e example.
