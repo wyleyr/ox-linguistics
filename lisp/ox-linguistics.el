@@ -138,11 +138,9 @@ the appropriate package-specific paragraph transcoding function."
 	(org-element-put-property paragraph :judgment judgment)
 	(org-element-put-property paragraph :label label)
 	(org-element-put-property paragraph :proper-contents proper-contents)
-	(cond
-	 ((string= enclosing-pkg "gb4e")
-	  (org-linguistics-gb4e-paragraph paragraph contents info))
-	 ((string= enclosing-pkg "linguex")
-	  (org-linguistics-linguex-paragraph paragraph contents info))
+	(package-case enclosing-pkg
+	 ("gb4e" (org-linguistics-gb4e-paragraph paragraph contents info))
+	 ("linguex" (org-linguistics-linguex-paragraph paragraph contents info))
 	 (t
 	  ; this should not happen, as we won't be in the else branch
 	  ; of (if (not transcodep) ...) unless the enclosing env is a
@@ -244,20 +242,20 @@ will give:
 	 (env (org-export-read-attribute :attr_linguistics plain-list :environment))
 	 (cmd (org-export-read-attribute :attr_linguistics plain-list :item-command))
 	 (enclosing-pkg (org-linguistics-find-enclosing-pkg plain-list)))
-    (cond 
-      ; if this list itself has "gb4e" as package, use exe env, unless user
-      ; overrides
-      ((string= pkg "gb4e")
-       (org-linguistics-gb4e-plain-list plain-list contents info (or env "exe")))
-      ; if this list is *enclosed in* a gb4e list, use xlist env, unless user
-      ; overrides
-      ((string= enclosing-pkg "gb4e")
-       (org-linguistics-gb4e-plain-list plain-list contents info (or env "xlist")))
-      ; the distinction between toplevel and sublevel lists is handled at the
-      ; item level for linguex
-      ((string= enclosing-pkg "linguex")
-       (org-linguistics-linguex-plain-list plain-list contents info))
-      (t (org-latex-plain-list plain-list contents info)))))
+    (if (string= pkg "gb4e")
+        ; if this list itself has "gb4e" as package, use exe env, unless user
+        ; overrides
+	(org-linguistics-gb4e-plain-list plain-list contents info (or env "exe")))
+      ; otherwise, dispatch based on package of enclosing environment
+      (package-case enclosing-pkg
+        ; if this list is *enclosed in* a gb4e list, use xlist env, unless user
+        ; overrides
+	("gb4e" (org-linguistics-gb4e-plain-list plain-list contents info 
+						 (or env "xlist")))
+        ; the distinction between toplevel and sublevel lists is handled at the
+        ; item level for linguex
+	("linguex" (org-linguistics-linguex-plain-list plain-list contents info))
+	(t (org-latex-plain-list plain-list contents info)))))
 
 (defun org-linguistics-gb4e-plain-list (plain-list contents info list-type)
   "Transcode a plain list to gb4e example.
@@ -306,15 +304,14 @@ contextual information."
   (let* ((parent-list (org-element-property :parent item))
 	 (pkg (org-export-read-attribute :attr_linguistics parent-list :package))
 	 (enclosing-pkg (org-linguistics-find-enclosing-pkg item)))
-    (cond 
-      ((string= enclosing-pkg "gb4e")
-       (org-linguistics-gb4e-item item contents info))
-      ((string= pkg "linguex")
-       ; toplevel item, to be transcoded as \ex.
-       (org-linguistics-linguex-item item contents info t))
-      ((string= enclosing-pkg "linguex")
-       ; sublist item, to be transcoded as \a. etc.
-       (org-linguistics-linguex-item item contents info nil))
+    (package-case enclosing-pkg 
+      ("gb4e" (org-linguistics-gb4e-item item contents info))
+      ("linguex"
+       (if (string= pkg "linguex")
+           ; toplevel item, to be transcoded as \ex.
+	   (org-linguistics-linguex-item item contents info t)
+         ; sublist item, to be transcoded as \a. etc.
+	 (org-linguistics-linguex-item item contents info nil)))
       (t (org-latex-item item contents info)))))
 
 (defun org-linguistics-gb4e-item (item contents info)
