@@ -47,6 +47,25 @@
 	 (parent (org-linguistics-find-enclosing-pkg parent))
 	 (t nil))))
 
+(defmacro package-case (expr &rest bodies)
+  "(EXPR (PKG-NAME BODY...) ...)
+
+Eval EXPR to a package name and choose among clauses based on
+that package name.  Each clause looks like (PKG-NAME BODY...),
+where PKG-NAME is a string.  EXPR is evaluated and compared
+against each PKG-NAME in turn.  When a comparison succeeds, the
+corresponding BODY is evaluated."
+  (let* ((pkg (make-symbol "pkg"))
+	 (expanded-bodies
+	  (mapcar (lambda (b)
+		    (if (stringp (car b))
+			`((string= ,pkg ,(car b)) ,(cdr b))
+		      ; allow `t', etc. as PKG-NAME
+		      `(,(car b) ,(cdr b))))
+		  bodies)))
+    `(let ((,pkg ,expr))
+       (cond
+	,@expanded-bodies))))
 ;;
 ;; Paragraphs
 ;; 
