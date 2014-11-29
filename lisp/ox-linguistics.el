@@ -193,22 +193,12 @@ contextual information.
 
 This function simply wraps org-latex-plain-list for most lists.
 But it adds the ability to export plain lists as linguistics
-examples using list attributes provided via ATTR_LINGUISTICS declarations.
+examples using list attributes provided via ATTR_LINGUISTICS
+declarations.
 
 You can set the :package attribute of an Org list to \"gb4e\" or
 \"linguex\" to get the appropriate formatting for a gb4e or
 linguex example environment in the export output.
-
-You can set the :item-command attribute to set the command used
-to introduce examples.  (If you do not specify :item-command, a
-package-appropriate default will be used.)  Possible values for
-each backend package are listed in
-`org-linguistics-gb4e-item-commands',
-`org-linguistics-linguex-item-commands', and
-`org-linguistics-philex-item-commands'.  Arguments to these
-commands can be provided from Org via a tag on the list item.
-Individual arguments should be separated by a string that matches
-`org-linguistics-command-args-separator'.
 
 When using gb4e, you can also set the :environment attribute to
 select the environment used to construct the example list.  (If
