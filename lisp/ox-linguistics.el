@@ -291,15 +291,11 @@ CONTENTS holds the contents of the item.  INFO is a plist holding
 contextual information."
   (let* ((parent-list (org-element-property :parent item))
 	 (pkg (org-export-read-attribute :attr_linguistics parent-list :package))
-	 (enclosing-pkg (org-linguistics-find-enclosing-pkg item)))
+	 (enclosing-pkg (org-linguistics-find-enclosing-pkg item))
+	 (linguex-toplevel (string= pkg "linguex")))
     (package-case enclosing-pkg 
       ("gb4e" (org-linguistics-gb4e-item item contents info))
-      ("linguex"
-       (if (string= pkg "linguex")
-           ; toplevel item, to be transcoded as \ex.
-	   (org-linguistics-linguex-item item contents info t)
-         ; sublist item, to be transcoded as \a. etc.
-	 (org-linguistics-linguex-item item contents info nil)))
+      ("linguex" (org-linguistics-linguex-item item contents info linguex-toplevel))
       (t (org-latex-item item contents info)))))
 
 (defun org-linguistics-gb4e-item (item contents info)
