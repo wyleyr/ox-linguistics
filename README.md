@@ -35,7 +35,7 @@ This has a few advantages:
  - you can easily switch from one backend package to another
  - you can use Org's internal links to reference examples
 
-This package is in active development. It currently supports examples
+The package currently supports examples
 using `\ex. ...\par` in linguex and `\begin{exe}...\end{exe}` in gb4e,
 but it does not support gloss versions of these commands. I am
 considering adding support for the
